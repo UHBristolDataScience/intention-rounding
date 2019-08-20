@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<!-- Norman Pang 2019 -->
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <title>intentionRounding</title>
+  </head>
+  <body>
+    <h1>Intention rounding</h1>
+    notes:
+    <br/>
+    1. the top text boxes are required fields
+    <br/>
+    2. in the table, if you leave something blank and don't select an option, it will default to NA when submitted
+    <br/>
+    3. this will only work with a newer browser like chrome or edge (i.e. NOT old Internet Explorer) despite its dated 90's appearance
+    <br/>
+    4. use format dd/mm/yyyy
+    <br/> <br/>
+
+    <!-- main form body -->
+    <form method="post" action="savetoDB.php">
+      Date: <input name="date" type="date" required>
+      Nurse: <input name="nurse" type="text" required>
+      Consultant: <input name="consultant" type="text" required>
+      <br/> <br/>
+      <table id="dataTable" border="1"> </table>
+
+      <!-- main script next to generate the table and the radio buttons -->
+      <script>
+      //static variable for the number of beds on ITU
+      //note if changed here needs changing in the php and vice versa
+      let numberofbeds = 22;
+
+      //function to create a new data type 'category' with it's name being the displayed text
+      //and id being the value to be called upon in PHP (doesn't work with spaces in object
+      //names when trying $_POST in the PHP)
+      function category(name, id){
+        this.name = name;
+        this.id = id;
+      }
+
+      //static array for the intention rounding criteria
+      //note if changed here needs changing in the php and vice versa
+      let columns = [
+        new category("Bed number", "bed"),
+        new category("Line sites:accurate, dressing, time and date", "linesite"),
+        new category("Biopatch", "biopatch"),
+        new category("Line removal appropriate site", "lineremoval"),
+        new category("Height on CIS matches vent height", "height"),
+        new category("Infection stated and appropriate PPE", "infection"),
+        new category("Pro cath done", "procath"),
+        new category("Vent tubing correct", "venttube"),
+        new category("OOHCA bundle in place", "oohca"),
+        new category("VAP bundle in place", "vapbundle"),
+        new category("NOK recorded in last 24hrs", "nok"),
+      ];
+
+      //main function to generate the table. takes the arguments:
+      //'table' is the html table object. 'headers' are the intention rounding criteria
+      function generateTable(table, headers) {
+
+        //creating table headers
+        let thead = table.createTHead();
+        let row = thead.insertRow();
+        for (let h of headers){
+          let th = document.createElement("th");
+          let text = document.createTextNode(h.name);
+          th.appendChild(text);
+          row.appendChild(th);
+        }
+
+        //function if the bed number is single digits to change it to a 2 digit layout
+        //to standard the strings of the id of the radio buttons later to access from the PHP
+        function minTwoDigits(n) {
+          return (n < 10 ? '0' : '') + n;
+        }
+
+        //creating table body. initial for loop creates each row
+        //setting r as 1 to reflect real bed number rather than index number to use later
+        //first for loop to create each row one by one (starting at r=1)
+        for (let r=1 ; r <= numberofbeds ; r++) {
+
+          //if the bed number is single digits to change it to a 2 digit layout
+          //converting to strings as well
+          let c = "";
+          c = c + minTwoDigits(r);
+
+          let row = table.insertRow();
+          let bedNumber = row.insertCell();
+          //putting in the bed number in the first column
+          bedNumber.appendChild(document.createTextNode(r));
+          //the next for loop to create each of the relevant cells with radio buttons in each row
+          //b starts at 1 as the initial column letiable is the bed number
+          for (let b=1 ; b<columns.length ; b++){
+            let cell = row.insertCell();
+            //creates the radio buttons with a unique id per cell. the unique cell ID is
+            //the 2 digit row number + category.id
+            let yesRadio = makeRadioButton(c+columns[b].id, "yes", "Yes");
+            cell.appendChild(yesRadio);
+            let noRadio = makeRadioButton(c+columns[b].id, "no", "No");
+            cell.appendChild(noRadio);
+            let naRadio = makeRadioButton(c+columns[b].id, "NA", "NA");
+            cell.appendChild(naRadio);
+          }
+        }
+      }
+
+      //function to create dynamically generate radio buttons
+      //id is the unique ID per cell (otherwise the radio buttons wont work independently per cell)
+      //value is what is stored and returned from the html document. name is the visible text
+      function makeRadioButton(name, value, text) {
+
+          let label = document.createElement("label");
+          let radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = name;
+          radio.value = value;
+
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(text));
+          return label;
+        }
+
+      //getting the table (id name 'dataTable') and putting it into a letiable
+      let dataTable = document.getElementById("dataTable");
+      //generating the table with the table id and the column array
+      generateTable(dataTable, columns);
+
+      </script>
+
+      <br/> <br/>
+      <!-- user action required before form submission -->
+      type your bank PIN number and mothers maiden name into this box to confirm you have finished data entry before saving: <input name="confirmationbox" type="text" required>
+      <!-- save button -->
+      <input type="submit" name="youraction" value="Submit">
+      <br/> <br/> <br/> <br/>
+    for any questions please see the GitHub readme or you can contact me at normanpang1@gmail.com
+
+    </form>
+  </body>
+</html>
