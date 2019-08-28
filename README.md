@@ -4,7 +4,7 @@ Digitising the daily intention rounding process
 Hi this is a project to digities the intention rounding proecss at the BRI ITU.
 
 Requires the creation of a SQL database with below details:
-- Databse name: intentionrounding
+- Database name: intentionrounding
 - Table name: intentiondata
 
 
