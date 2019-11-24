@@ -1,0 +1,33 @@
+<?php
+
+//run initial database creation command separately
+CREATE DATABASE intentionrounding;
+
+CREATE TABLE intentiondata(
+    ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    date DATE NOT NULL,
+    nurse VARCHAR(255) NOT NULL,
+    consultant VARCHAR(255) NOT NULL,
+    bed INT NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    value VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE categories(
+    ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    codename VARCHAR(255) NOT NULL
+);
+
+//sql command to put some initial categories into the table. these can
+//easily be changed later from the front end webpage
+INSERT INTO `categories` (`ID`, `title`, `codename`)
+VALUES
+  (NULL, 'Line sites:accurate, dressing, time and date', 'linesite'),
+  (NULL, 'Biopatch', 'biopatch'),
+  (NULL, 'CAM ICU score documented', 'camicu'),
+  (NULL, 'Height on CIS matches vent height', 'height'),
+  (NULL, 'Infection stated and appropriate PPE', 'infection'),
+  (NULL, 'Vent tubing correct', 'venttube'),
+  (NULL, 'Correct bundle on CIS', 'cisbundle')
+  ;
